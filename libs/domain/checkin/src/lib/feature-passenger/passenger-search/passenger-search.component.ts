@@ -3,6 +3,7 @@ import { form, FormField, required } from '@angular/forms/signals';
 import { RouterLink } from '@angular/router';
 import { Passenger, PassengerFilter } from '../../logic-passenger/model/passenger';
 import { PassengerStore } from '../../logic-passenger/state/passenger.signal.store';
+import { initialFlight } from '@flight-demo/domain/booking-api-boarding';
 
 
 @Component({
@@ -42,6 +43,7 @@ export class PassengerSearchComponent {
   }
 
   select(passenger: Passenger): void {
+    initialFlight
     this.selectedPassenger.update(curr => curr === passenger ? undefined : passenger);
   }
 }
