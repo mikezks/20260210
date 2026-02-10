@@ -1,4 +1,3 @@
-import { AsyncPipe, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -48,6 +47,13 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
           <a routerLink="boarding">
             <i class="icon icon-boarding"></i>
             <p>Boarding</p>
+          </a>
+        </li>
+
+        <li routerLinkActive="active">
+          <a routerLink="miles">
+            <i class="icon icon-miles"></i>
+            <p>Miles</p>
           </a>
         </li>
 
