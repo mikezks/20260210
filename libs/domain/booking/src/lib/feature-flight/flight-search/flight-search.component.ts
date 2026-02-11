@@ -57,6 +57,15 @@ export class FlightSearchComponent {
     console.log(this.filter().from);
     this.filter.update(curr => ({ ...curr, from: 'Milano' }));
     console.log(this.filter().from);
+
+    // Glitch-free Behavior
+    const counter = signal(0);
+    const isEven = computed(() => counter() % 2 === 0);
+    effect(() => console.log({
+      counter: counter(),
+      isEven: isEven()
+    }));
+    setInterval(() => counter.update(curr => curr + 2), 3_000);
   }
 
   protected search(): void {
