@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
+import { UiCoreModule } from './shared/ui-core/ui-core.module';
+import { RouterOutlet } from '@angular/router';
 
 
 @Component({
-  selector: 'app-root',
-  standalone: false,
-  templateUrl: './app.component.html'
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    imports: [UiCoreModule, RouterOutlet]
 })
 export class AppComponent {
 }
