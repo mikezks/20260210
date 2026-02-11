@@ -40,6 +40,23 @@ export class FlightSearchComponent {
       this.filter();
       untracked(() => this.search());      
     });
+
+    // Signal Update Behavior
+    console.log(this.filter().from);
+    this.filter.update(curr => ({ ...curr, from: 'Hamburg' }));
+    console.log(this.filter().from);
+    this.filter.update(curr => ({ ...curr, from: 'Barcelona' }));
+    console.log(this.filter().from);
+    this.filter.update(curr => ({ ...curr, from: 'Madrid' }));
+    console.log(this.filter().from);
+    this.filter.update(curr => ({ ...curr, from: 'Rome' }));
+    console.log(this.filter().from);
+    this.filter.update(curr => ({ ...curr, from: 'Oslo' }));
+    console.log(this.filter().from);
+    this.filter.update(curr => ({ ...curr, from: 'Athens' }));
+    console.log(this.filter().from);
+    this.filter.update(curr => ({ ...curr, from: 'Milano' }));
+    console.log(this.filter().from);
   }
 
   protected search(): void {
