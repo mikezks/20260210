@@ -1,10 +1,8 @@
-import { Component, DestroyRef, Injector, Input, OnChanges, SimpleChanges, inject, runInInjectionContext } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { routerFeature } from '@flight-demo/shared/state';
 import { Store } from '@ngrx/store';
 import { initialFlight } from '../../logic-flight/model/flight';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FlightService } from '../../logic-flight/data-access/flight.service';
 
 
 @Component({
@@ -16,8 +14,6 @@ import { FlightService } from '../../logic-flight/data-access/flight.service';
 })
 export class FlightEditComponent implements OnChanges {
   private store = inject(Store);
-  private readonly injector = inject(Injector);
-  private readonly destroyRef = inject(DestroyRef);
 
   @Input() flight = initialFlight;
 
@@ -30,10 +26,8 @@ export class FlightEditComponent implements OnChanges {
   });
 
   constructor() {
-    console.log('Flights: ', inject(FlightService).flights);
-
-    this.destroyRef.onDestroy(
-      () => console.log('Bye, bye! :(')
+    this.store.select(routerFeature.selectRouteParams).subscribe(
+      params => console.log(params)
     );
   }
 
@@ -45,17 +39,5 @@ export class FlightEditComponent implements OnChanges {
 
   protected save(): void {
     console.log(this.editForm.value);
-    const flightService = runInInjectionContext(
-      this.injector,
-      () => inject(FlightService)
-    );
-
-    this.store.select(routerFeature.selectRouteParams).pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe(
-      params => console.log(params)
-    );
-
-    console.log('Flights: ', flightService.flights);
   }
 }
