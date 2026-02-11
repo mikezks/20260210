@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, signal, untracked } from '@angular/core';
+import { Component, computed, effect, inject, Injector, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Flight } from '../../logic-flight/model/flight';
 import { injectTicketsFacade } from '../../logic-flight/state/facade';
@@ -19,6 +19,7 @@ import { FlightFilterComponent } from '../../ui-flight/flight-filter/flight-filt
 })
 export class FlightSearchComponent {
   private ticketsFacade = injectTicketsFacade();
+  private readonly injector = inject(Injector);
 
   protected filter = signal({
     from: 'Paris',
@@ -35,7 +36,6 @@ export class FlightSearchComponent {
   protected flights$ = this.ticketsFacade.flights$;
 
   constructor() {
-    effect(() => console.log(this.route()));
     effect(() => {
       this.filter();
       untracked(() => this.search());      
@@ -43,6 +43,10 @@ export class FlightSearchComponent {
   }
 
   protected search(): void {
+    effect(() => console.log(this.route()), {
+      injector: this.injector
+    });
+
     if (!this.filter().from || !this.filter().to) {
       return;
     }
