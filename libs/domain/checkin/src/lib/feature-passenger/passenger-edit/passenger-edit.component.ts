@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject, input, numberAttribute, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { validatePassengerStatus } from '../../util-validation/passenger-validator/passenger-status.validator';
+import { initialPassenger } from '../../logic-passenger/model/passenger';
 
 
 @Component({
@@ -20,6 +21,21 @@ export class PassengerEditComponent {
       validatePassengerStatus(['A', 'B', 'C'])
     ]]
   });
+
+  readonly id = input(0, { transform: numberAttribute });
+  private readonly passenger = signal({
+    ...initialPassenger,
+    firstName: 'Jane'
+  });
+
+  constructor() {
+    effect(() => console.log(this.id()));
+    effect(() => this.editForm.patchValue(this.passenger()));
+    setTimeout(() => this.passenger.set({
+      ...initialPassenger,
+      firstName: 'Peter'
+    }), 3_000);
+  }
 
   protected save(): void {
     console.log(this.editForm.value);
