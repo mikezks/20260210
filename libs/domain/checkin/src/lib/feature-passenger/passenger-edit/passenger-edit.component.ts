@@ -1,5 +1,5 @@
 import { httpResource } from '@angular/common/http';
-import { Component, input, linkedSignal, numberAttribute } from '@angular/core';
+import { Component, computed, input, linkedSignal, numberAttribute } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { apply, createMetadataKey, form, FormField, metadata, required, schema, SchemaPath, validate } from '@angular/forms/signals';
 import { RouterLink } from '@angular/router';
@@ -71,9 +71,9 @@ export class PassengerEditComponent {
   // (2) Form State: value, valid, dirty, touched, readonly, disabled, hidden, errors
   protected editForm = form(this.passengerWithAddress, passengerSchema);
 
-  // protected readonly allowedFirstnames = computed(
-  //   () => this.editForm.firstName().metadata(ALLOWED_FIRSTNAMES)
-  // );
+  protected readonly allowedFirstnames = computed(
+    () => this.editForm.firstName().metadata(ALLOWED_FIRSTNAMES)?.()?.join(', ')
+  );
 
   protected save(event: Event): void {
     event.preventDefault();
