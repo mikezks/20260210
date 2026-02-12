@@ -9,10 +9,12 @@ import { initialPassenger, Passenger } from '../../logic-passenger/model/passeng
 
 export const passengerSchema = schema<Passenger>(passengerPath => {
   required(passengerPath.firstName, {
-    message: 'The control FirstName is mandatory.'
+    message: 'Enter FirstName or Name.',
+    when: ({ valueOf }) => !valueOf(passengerPath.name)
   });
   required(passengerPath.name, {
-    message: 'The control Name is mandatory.'
+    message: 'Enter FirstName or Name.',
+    when: ({ valueOf }) => !valueOf(passengerPath.firstName)
   });
 });
 
