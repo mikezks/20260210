@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { injectUsername } from '../../logic-config/config.provider';
 
 
 @Component({
@@ -19,6 +20,7 @@ import { Component } from '@angular/core';
           <li>Micro Frontends</li>
           <li>... and much more!</li>
         </ul>
+        <p>Username:  {{ username() }}</p>
       </div>
     </div>
   `,
@@ -29,4 +31,5 @@ import { Component } from '@angular/core';
   `]
 })
 export class HomeComponent {
+  protected readonly username = injectUsername();
 }

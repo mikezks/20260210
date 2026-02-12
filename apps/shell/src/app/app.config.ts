@@ -5,6 +5,7 @@ import { provideEffects } from '@ngrx/effects';
 import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { APP_ROUTES } from './app.routes';
+import { provideConfigState } from '@flight-demo/shared/core';
 
 
 export const appConfig: ApplicationConfig = {
@@ -17,5 +18,6 @@ export const appConfig: ApplicationConfig = {
     provideEffects(),
     provideRouterFeature(),
     provideStoreDevtools(),
+    provideConfigState('./config.state.json'),
   ]
 };

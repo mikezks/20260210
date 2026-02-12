@@ -12,4 +12,5 @@ export * from './lib/util-common/date-utils';
 export * from './lib/util-signals/delegated-signal';
 export * from './lib/util-signals/signal-debugging';
 export * from './lib/util-signals/signal-operators';
-
+export * from './lib/logic-config/config.provider';
+export * from './lib/model-config/config.model';
