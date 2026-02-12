@@ -1,5 +1,5 @@
 import { tapResponse } from '@ngrx/operators';
-import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
+import { patchState, signalStore, withComputed, withHooks, withMethods, withProps, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { Flight } from '../model/flight';
 import { FlightFilter } from '../model/flight-filter';
@@ -33,13 +33,13 @@ export const BookingStore = signalStore(
     setFilter: (filter: FlightFilter) => patchState(store, { filter }),
     setFlights: (flights: Flight[]) => patchState(store, { flights }),
   })),
+  withProps(() => ({
+    _flightService: inject(FlightService),
+  })),
   // Side-Effects
-  withMethods((
-    store,
-    flightService = inject(FlightService)
-  ) => ({
+  withMethods(store => ({
     loadFlights: rxMethod<FlightFilter>(pipe(
-      switchMap(filter => flightService.find(
+      switchMap(filter => store._flightService.find(
         filter.from, filter.to, filter.urgent
       ).pipe(
         tapResponse({
@@ -49,4 +49,7 @@ export const BookingStore = signalStore(
       ))
     )),
   })),
+  withHooks(store => ({
+    onInit: () => store.loadFlights(store.filter)
+  }))
 );

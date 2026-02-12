@@ -20,15 +20,6 @@ import { FlightFilterComponent } from '../../ui-flight/flight-filter/flight-filt
 export class FlightSearchComponent {
   protected readonly store = inject(BookingStore);
 
-  protected readonly filter = this.store.filter;
-  protected readonly route = this.store.route;
-  protected readonly basket = this.store.basket;
-  protected readonly flights = this.store.flights;
-
-  constructor() {
-    this.store.loadFlights(this.store.filter);
-  }
-
   protected delay(flight: Flight): void {
     const oldFlight = flight;
     const oldDate = new Date(oldFlight.date);
@@ -41,15 +32,11 @@ export class FlightSearchComponent {
     };
 
     this.store.setFlights(
-      this.flights().map(
+      this.store.flights().map(
         flight => flight.id === newFlight.id
           ? newFlight
           : flight
       )
     );
-  }
-
-  protected reset(): void {
-    this.store.setFlights([]);
   }
 }
