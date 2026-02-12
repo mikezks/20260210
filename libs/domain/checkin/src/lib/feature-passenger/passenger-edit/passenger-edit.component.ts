@@ -1,9 +1,25 @@
 import { httpResource } from '@angular/common/http';
 import { Component, input, numberAttribute } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { form, FormField, required, schema } from '@angular/forms/signals';
+import { form, FormField, required, schema, SchemaPath, validate } from '@angular/forms/signals';
 import { RouterLink } from '@angular/router';
 import { initialPassenger, Passenger } from '../../logic-passenger/model/passenger';
+
+
+export function validateFirstname(
+  firstnameField: SchemaPath<string>,
+  validFirstnames: string[]
+): void {
+  validate(firstnameField, ({ value }) =>
+    validFirstnames.includes(value())
+      ? null
+      : {
+        kind: 'forbiddenFirstname',
+        message: 'The entered Firstname is not valid. Please use one of the following: '
+          + validFirstnames.join(', ')
+      }
+  )
+}
 
 // (3) Form Logic: validators, conditional disabled, field properties
 
@@ -16,6 +32,9 @@ export const passengerSchema = schema<Passenger>(passengerPath => {
     message: 'Enter FirstName or Name.',
     when: ({ valueOf }) => !valueOf(passengerPath.firstName)
   });
+  validateFirstname(passengerPath.firstName, [
+    'Emma', 'Mia', 'Hanna'
+  ])
 });
 
 @Component({
