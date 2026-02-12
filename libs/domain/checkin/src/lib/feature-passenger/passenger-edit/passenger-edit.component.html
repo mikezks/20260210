@@ -48,8 +48,10 @@
         </div>
       } -->
 
+      <app-adress-form [address]="editForm.address" />
+
     </form>
-    
+
     <div class="form-group">
       <a
         [routerLink]="['..', this.id()-1]"

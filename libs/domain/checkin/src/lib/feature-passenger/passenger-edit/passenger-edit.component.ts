@@ -1,9 +1,10 @@
 import { httpResource } from '@angular/common/http';
-import { Component, input, numberAttribute } from '@angular/core';
+import { Component, input, linkedSignal, numberAttribute } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { createMetadataKey, form, FormField, metadata, required, schema, SchemaPath, validate } from '@angular/forms/signals';
+import { apply, createMetadataKey, form, FormField, metadata, required, schema, SchemaPath, validate } from '@angular/forms/signals';
 import { RouterLink } from '@angular/router';
 import { initialPassenger, Passenger } from '../../logic-passenger/model/passenger';
+import { Address, AddressForm, addressSchema, initialAddress } from '@flight-demo/shared/core';
 
 
 export const ALLOWED_FIRSTNAMES = createMetadataKey<string[]>();
@@ -26,7 +27,9 @@ export function validateFirstname(
 
 // (3) Form Logic: validators, conditional disabled, field properties
 
-export const passengerSchema = schema<Passenger>(passengerPath => {
+export const passengerSchema = schema<Passenger & {
+  address: Address
+}>(passengerPath => {
   required(passengerPath.firstName, {
     message: 'Enter FirstName or Name.',
     when: ({ valueOf }) => !valueOf(passengerPath.name)
@@ -37,7 +40,8 @@ export const passengerSchema = schema<Passenger>(passengerPath => {
   });
   validateFirstname(passengerPath.firstName, [
     'Emma', 'Mia', 'Hanna'
-  ])
+  ]);
+  apply(passengerPath.address, addressSchema);
 });
 
 @Component({
@@ -47,6 +51,7 @@ export const passengerSchema = schema<Passenger>(passengerPath => {
     RouterLink,
     // (4) UI Control: Template Binding
     FormField,
+    AddressForm
   ],
   templateUrl: './passenger-edit.component.html'
 })
@@ -58,9 +63,13 @@ export class PassengerEditComponent {
     url: 'https://demo.angulararchitects.io/api/passenger',
     params: { id: this.id() }
   }), { defaultValue: initialPassenger });
+  protected readonly passengerWithAddress = linkedSignal(() => ({
+    ...this.passengerResource.value(),
+    address: initialAddress
+  }));
 
   // (2) Form State: value, valid, dirty, touched, readonly, disabled, hidden, errors
-  protected editForm = form(this.passengerResource.value, passengerSchema);
+  protected editForm = form(this.passengerWithAddress, passengerSchema);
 
   // protected readonly allowedFirstnames = computed(
   //   () => this.editForm.firstName().metadata(ALLOWED_FIRSTNAMES)
