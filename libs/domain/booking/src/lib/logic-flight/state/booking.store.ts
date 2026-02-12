@@ -9,7 +9,9 @@ import { FlightService } from '../data-access/flight.service';
 
 
 export const BookingStore = signalStore(
+  // Dependency Injection Config
   { providedIn: 'root' },
+  // State
   withState({
     filter: {
       from: 'London',
@@ -24,19 +26,24 @@ export const BookingStore = signalStore(
   }),
   withComputed(store => ({
     delayed: () => store.flights().filter(flight => flight.delayed),
+    route: () => 'From ' + store.filter.from() + ' to ' + store.filter.to() + '.',
   })),
+  // Updater
+  withMethods(store => ({
+    setFilter: (filter: FlightFilter) => patchState(store, { filter }),
+    setFlights: (flights: Flight[]) => patchState(store, { flights }),
+  })),
+  // Side-Effects
   withMethods((
     store,
     flightService = inject(FlightService)
   ) => ({
-    setFilter: (filter: FlightFilter) => patchState(store, { filter }),
-    setFlights: (flights: Flight[]) => patchState(store, { flights }),
     loadFlights: rxMethod<FlightFilter>(pipe(
       switchMap(filter => flightService.find(
         filter.from, filter.to, filter.urgent
       ).pipe(
         tapResponse({
-          next: flights => patchState(store, { flights }),
+          next: flights => store.setFlights(flights),
           error: err => console.error(err),
         })
       ))

@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Flight } from '../../logic-flight/model/flight';
-import { injectTicketsFacade } from '../../logic-flight/state/facade';
+import { BookingStore } from '../../logic-flight/state/booking.store';
 import { FlightCardComponent } from '../../ui-flight/flight-card/flight-card.component';
 import { FlightFilterComponent } from '../../ui-flight/flight-filter/flight-filter.component';
-import { BookingStore } from '../../logic-flight/state/booking.store';
 
 
 @Component({
@@ -19,37 +18,15 @@ import { BookingStore } from '../../logic-flight/state/booking.store';
   templateUrl: './flight-search.component.html',
 })
 export class FlightSearchComponent {
-  private ticketsFacade = injectTicketsFacade();
-  private readonly store = inject(BookingStore);
+  protected readonly store = inject(BookingStore);
 
-  protected filter = signal({
-    from: 'Paris',
-    to: 'New York',
-    urgent: false
-  });
-  protected readonly route = computed(
-    () => 'From ' + this.filter().from + ' to ' + this.filter().to + '.'
-  );
-  protected basket: Record<number, boolean> = {
-    3: true,
-    5: true
-  };
-  protected flights = this.ticketsFacade.flights;
+  protected readonly filter = this.store.filter;
+  protected readonly route = this.store.route;
+  protected readonly basket = this.store.basket;
+  protected readonly flights = this.store.flights;
 
   constructor() {
-    effect(() => console.log(this.route()));
-    effect(() => {
-      this.filter();
-      untracked(() => this.search());      
-    });
-  }
-
-  protected search(): void {
-    if (!this.filter().from || !this.filter().to) {
-      return;
-    }
-
-    this.ticketsFacade.search(this.filter());
+    this.store.loadFlights(this.store.filter);
   }
 
   protected delay(flight: Flight): void {
@@ -63,10 +40,16 @@ export class FlightSearchComponent {
       delayed: true
     };
 
-    this.ticketsFacade.update(newFlight);
+    this.store.setFlights(
+      this.flights().map(
+        flight => flight.id === newFlight.id
+          ? newFlight
+          : flight
+      )
+    );
   }
 
   protected reset(): void {
-    this.ticketsFacade.reset();
+    this.store.setFlights([]);
   }
 }
