@@ -41,35 +41,37 @@
           {{ editForm.controls.passengerStatus.errors?.['passengerStatus'].validStatus.join(', ') }}
         </div>
       } -->
+
+      <div class="form-group">
+        <a
+          [routerLink]="['..', this.id()-1]"
+          class="btn btn-default"
+        >
+          ID -1
+        </a>
+        <button
+          (click)="save($event)"
+          [disabled]="!editForm().valid()"
+          class="btn btn-default"
+        >
+          Save
+        </button>
+        <button
+          (click)="passengerResource.reload()"
+          class="btn btn-default"
+        >
+          Reload
+        </button>
+        <a
+          [routerLink]="['..', this.id()+1]"
+          class="btn btn-default"
+        >
+          ID +1
+        </a>
+      </div>
     </form>
 
-    <div class="form-group">
-      <a
-        [routerLink]="['..', this.id()-1]"
-        class="btn btn-default"
-      >
-        ID -1
-      </a>
-      <button
-        (click)="save()"
-        [disabled]="!editForm().valid()"
-        class="btn btn-default"
-      >
-        Save
-      </button>
-      <button
-        (click)="passengerResource.reload()"
-        class="btn btn-default"
-      >
-        Reload
-      </button>
-      <a
-        [routerLink]="['..', this.id()+1]"
-        class="btn btn-default"
-      >
-        ID +1
-      </a>
-    </div>
+    
     <p>Status: {{ passengerResource.status() }}</p>
   </div>
 </div>

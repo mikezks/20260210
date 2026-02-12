@@ -38,7 +38,8 @@ export class PassengerEditComponent {
     });
   }
 
-  protected save(): void {
+  protected save(event: Event): void {
+    event.preventDefault();
     this.passengerResource.set(
       this.editForm().value()
     );
